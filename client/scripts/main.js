@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function latest () {
+		console.log("latest")
 		dataset=sortDS(dataset);
 		var mostRecent=10;
 	  	var divSelect = document.getElementById('buttonHolder');
@@ -66,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	  	var divSelect = document.getElementById('jargon');
 	  	divSelect.innerHTML='<div class="slide_defin">Most recent submissons (click word for the full definition, Lucy’s comments and related words)</div></p>';
 		for (var i = 0; i < mostRecent; i++) {
+			console.log(i)
 			var wordContent=''
 			var annotation=dataset[i]
 			var str =String(annotation.commenturl)
@@ -81,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			divSelect.innerHTML=divSelect.innerHTML+wordContent;
 
 			var buttonSelect=document.getElementById(annotation.wordid);
-			console.log(buttonSelect)
+			//console.log(buttonSelect)
 			buttonSelect.addEventListener("click",fullDef);
 			};
 
@@ -119,8 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
  	function sortDS(data) {
  		data.sort(function(a, b) {
-    		a = new Date(a.submisiondate);
-    		b = new Date(b.submisiondate);
+    		a = (a.submisiondate);
+    		b = (b.submisiondate);
     	return a>b ? -1 : a<b ? 1 : 0;
 		});
 		return data
