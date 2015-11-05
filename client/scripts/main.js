@@ -32,27 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 		else {
 			results=sortDS(results);
-			var divSelect = document.getElementById('jargon');
-			divSelect.innerHTML="";
-			for (var i = 0; i < results.length; i++) {
-				var wordContent=''
-				var annotation=results[i]
-				var str =String(annotation.commenturl)
-				wordContent=wordContent+'<div class="slide_date">'+annotation.submisiondate+'</div>'+
-				'<div class="slide_word" id="'+annotation.wordid+'">'+annotation.word+'</div>'+
-				'<div class="slide_type">'+annotation.wordtype+'</div>'+
-				'<div class="slide_url">Seen at: '+convertlink(str)+'</div></p>'+
-				'<div class="slide_subhead">Plain english definition</div>'+
-				'<div class="slide_defin">'+annotation.definition+'</div></p>'+
-				'<div class="slide_subhead">Lucy’s commentary</div>'+
-				'<div class="slide_defin">'+annotation.lucycommentary+'</div></p>'+
-				'<div class="slide_subhead">Usage example</div>'+
-				'<div class="slide_defin">'+annotation.usageexample+'</div></p>'+
-				'<div class="slide_type">Related words</div>'+
-				'<div class="slide_wordSmall">'+annotation.relatedwords+'</div>'+
-				'<div class="slide_bottom"></div></p></p>'
-				divSelect.innerHTML=divSelect.innerHTML+wordContent;
-			}
+			buildDef(results);
 		}
 	}
 
@@ -66,8 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	  	button.addEventListener("click",submit);
 	  	var divSelect = document.getElementById('jargon');
 	  	divSelect.innerHTML='<div class="slide_defin">Most recent submissons (click word for the full definition, Lucy’s comments and related words)</div></p>';
-		for (var i = 0; i < mostRecent; i++) {
-			console.log(i)
+		buildDef(data)for (var i = 0; i < mostRecent; i++) {
 			var wordContent=''
 			var annotation=dataset[i]
 			var str =String(annotation.commenturl)
@@ -81,16 +60,52 @@ document.addEventListener('DOMContentLoaded', () => {
 			'<div class="slide_defin">'+annotation.usageexample+'</div>'+
 			'<div class="slide_bottom"></div></p></p>'
 			divSelect.innerHTML=divSelect.innerHTML+wordContent;
-
-			var buttonSelect=document.getElementById(annotation.wordid);
-			//console.log(buttonSelect)
-			buttonSelect.addEventListener("click",fullDef);
-			};
+		}
+		select('.slide_word').forEach(function (el) {
+				el.addEventListener("click",fullDef);
+			})
 
 	};
 
+	function buildDef(data) {
+		console.log("Data",data)
+		var divSelect = document.getElementById('jargon');
+		divSelect.innerHTML=""
+		for (var i = 0; i < data.length; i++) {
+			var wordContent=''
+			var annotation=data[i]
+			var str =String(annotation.commenturl)
+			wordContent=wordContent+'<div class="slide_date">'+annotation.submisiondate+'</div>'+
+			'<div class="slide_word" id="'+annotation.wordid+'">'+annotation.word+'</div>'+
+			'<div class="slide_type">'+annotation.wordtype+'</div>'+
+			'<div class="slide_url">Seen at: '+convertlink(str)+'</div></p>'+
+			'<div class="slide_subhead">Plain english definition</div>'+
+			'<div class="slide_defin">'+annotation.definition+'</div></p>'+
+			'<div class="slide_subhead">Lucy’s commentary</div>'+
+			'<div class="slide_defin">'+annotation.lucycommentary+'</div></p>'+
+			'<div class="slide_subhead">Usage example</div>'+
+			'<div class="slide_defin">'+annotation.usageexample+'</div></p>'+
+			'<div class="slide_type">Related words</div>'+
+			'<div class="slide_wordSmall">'+annotation.relatedwords+'</div>'+
+			'<div class="slide_bottom"></div></p></p>'
+			divSelect.innerHTML=divSelect.innerHTML+wordContent;
+
+		}
+
+	}
+
+	function select(selector, parent=document) {
+			 // return an array of elements matching the selector
+		 	return [].slice.apply(parent.querySelectorAll(selector));
+	}
+
 	function fullDef() {
-		console.log("fullDef")
+		var lookup=this.id
+		var results=dataset.filter(function(el){
+			return el.wordid==lookup
+		});
+		console.log("Results ",results);
+		buildDef (results)
 	}
 
 	function submit() {
@@ -115,10 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	    }
 	}
 
-	function resize () {
-		width= document.getElementById('holder').getBoundingClientRect().width;
- 	 }
-
  	function sortDS(data) {
  		data.sort(function(a, b) {
     		a = (a.submisiondate);
@@ -126,6 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
     	return a>b ? -1 : a<b ? 1 : 0;
 		});
 		return data
+ 	}
+
+ 	function resize () {
+		width= document.getElementById('holder').getBoundingClientRect().width;
  	}
 
 
