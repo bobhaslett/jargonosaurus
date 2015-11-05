@@ -7,7 +7,7 @@ import runSequence from 'run-sequence';
 
 
 // Specify a destination directory for deploying this project
-const deployTarget = ''; // e.g. 'features/YOUR-PROJECT-NAME'
+const deployTarget = 'sites/2015/jargonosaurus'; // e.g. 'features/YOUR-PROJECT-NAME'
 
 const webpackEntry = './client/scripts/main.js';
 const webpackOutput = 'scripts/main.bundle.js';

@@ -1,9 +1,21 @@
+$o-grid-is-silent: false;
+$o-buttons-is-silent: false;
+
 @import 'o-fonts/main';
 @import 'o-colors/main';
 @import 'o-footer/main';
+@import 'o-grid/main';
+@import 'o-buttons/main';
 
 @import 'fonts';
 
+// Default layouts
+// $o-grid-layouts: (
+//     S:  490px,
+//     M:  740px,
+//     L:  980px,
+//     XL: 1220px,
+// );
 
 body {
   @include oColorsFor(page, background);
@@ -12,7 +24,6 @@ body {
   border: 0;
   font-family: oFontsGetFontFamilyWithFallbacks(MetricWeb);
 }
-
 
 .site-header {
   padding: 18px 0 14px;
@@ -26,4 +37,111 @@ body {
 }
     .masthead {
       height: 18px;
+    }
+
+#holder {
+  margin: 0 auto;
+  display: block;
+  // width: 10em;
+}
+
+.headshot {
+  margin-top: 10px;
+  img {width:100%;}
+}
+
+#searchText {
+  width: 99%;
+  margin-top: 5px;
+  font-family: MetricWeb;
+  font-size: 1.5em;
+  line-height: 1.1em;
+}
+
+.o-buttons{
+  margin: 0 auto;
+  display: block;
+  font-family: MetricWeb;
+  font-size: 1.4em;
+  line-height: 1.1em;
+  width: 100%;
+  margin-top: 8px;
+}
+
+#jargon {
+  margin-top: 10px;
+}
+
+.slide_date {
+  font-family: MetricWeb;
+  text-align: left;
+  font-size: 1.4em;
+  line-height: 1.4em;
+  color: #000000; 
+}
+
+.slide_word {
+  font-family: courier;
+  font-style: bold;
+  text-align: left;
+  font-size: 2.0em;
+  line-height: 1em;
+  color: #B0797A; 
+}
+
+.slide_type{
+  font-family: FinancierTextWeb;
+  font-style: italic;
+  font-size: 1.6em;
+  line-height: 1.2em;
+  font-weight: 600;
+  color: #000000;
+}
+
+.slide_url {
+  text-decoration: none;
+  font-family: MetricWeb;
+  text-align: left;
+  font-size: 1.4em;
+  line-height: 1.2em;
+  color: #6a6d68; 
+}
+
+.slide_subhead {
+  font-family: MetricWeb;
+  text-align: left;
+  font-size: 1.5em;
+  line-height: 1.3em;
+  color: #000000; 
+}
+
+.slide_defin {
+  font-family: MetricWeb;
+  text-align: left;
+  font-size: 1.6em;
+  line-height: 1.3em;
+  color: #6a6d68;
+}
+
+.slide_wordSmall {
+  font-family: courier;
+  font-style: bold;
+  text-align: left;
+  font-size: 1.6em;
+  line-height: 1em;
+  color: #B0797A; 
+}
+
+.slide_bottom {
+  margin-top: 9px;
+  height: 1px;
+  border-bottom-style: solid;
+  border-bottom-width:1px;
+}
+
+@include oGridRespondTo(M) {
+  .headshot {
+
+  img {width:600px;}
+}
     }
