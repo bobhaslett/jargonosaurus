@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	// YOUR CODE HERE!
 	var dataset = spreadsheet.data.map(function(row) {
 		row.submisiondate = new Date(row.submisiondate);
+		console.log("row.submisiondate now" ,row.submisiondate)
 		if (!is_valid_date(row.submissiondate)) {
+			console.log(row.submisiondate);
 			row.submisiondate = new Date(null); // Epoch.
 		}
 		return row;
@@ -69,27 +71,30 @@ document.addEventListener('DOMContentLoaded', () => {
 	function latest () {
 		console.log("latest")
 		dataset=sortDS(dataset);
-		var mostRecent=19;
+		var mostRecent=50;
 	  	var divSelect = document.getElementById('buttonHolder');
 	  	divSelect.innerHTML='<button id="submit" class="o-buttons o-buttons--standout">Submit your jargon here</button>'
 	  	var button = document.getElementById('submit');
 	  	button.addEventListener("click",submit);
 	  	var divSelect = document.getElementById('jargon');
 	  	divSelect.innerHTML='<div class="slide_defin">Most recent submissons (click word for the full definition, Lucy’s comments and related words)</div></p>';
-		for (var i = 0; i < mostRecent; i++) {
+			for (var i = 0; i < mostRecent; i++) {
 			var wordContent=''
 			var annotation=dataset[i]
 			var str =String(annotation.commenturl)
-			wordContent=wordContent+'<div class="slide_date">'+annotation.submisiondate+'</div>'+
-			'<div class="slide_word" data-word="'+ annotation.word.toLowerCase() +'" id="'+annotation.wordid+'">'+annotation.word+'</div>'+
-			'<div class="slide_type">'+annotation.wordtype+'</div>'+
-			'<div class="slide_url">Seen at: '+convertlink(str)+'</div></p>'+
-			'<div class="slide_subhead">Plain english definition</div>'+
-			'<div class="slide_defin">'+annotation.definition+'</div></p>'+
-			'<div class="slide_subhead">Usage example</div>'+
-			'<div class="slide_defin">'+annotation.usageexample+'</div>'+
-			'<div class="slide_bottom"></div></p></p>'
-			divSelect.innerHTML=divSelect.innerHTML+wordContent;
+			var subDate=dateFormat(annotation.submisiondate)
+			if (annotation.word!== null) {
+				wordContent=wordContent+'<div class="slide_date">'+subDate+'</div>'+
+				'<div class="slide_word" data-word="'+ annotation.word.toLowerCase() +'" id="'+annotation.wordid+'">'+annotation.word+'</div>'+
+				'<div class="slide_type">'+annotation.wordtype+'</div>'+
+				'<div class="slide_url">Seen at: '+convertlink(str)+'</div></p>'+
+				'<div class="slide_subhead">Plain english definition</div>'+
+				'<div class="slide_defin">'+annotation.definition+'</div></p>'+
+				'<div class="slide_subhead">Usage example</div>'+
+				'<div class="slide_defin">'+annotation.usageexample+'</div>'+
+				'<div class="slide_bottom"></div></p></p>'
+				divSelect.innerHTML=divSelect.innerHTML+wordContent;
+			}
 		}
 		select('.slide_word').forEach(function (el) {
 				el.addEventListener("click",fullDef);
@@ -104,8 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		for (var i = 0; i < data.length; i++) {
 			var wordContent=''
 			var annotation=data[i]
-			var str =String(annotation.commenturl)
-			wordContent=wordContent+'<div class="slide_date">'+annotation.submisiondate+'</div>'+
+			var str =String(annotation.commenturl);
+			var subDate=dateFormat(annotation.submisiondate)
+			wordContent=wordContent+'<div class="slide_date">'+subDate+'</div>'+
 			'<div class="slide_word" data-word="'+ annotation.word.toLowerCase() +'" id="'+annotation.wordid+'">'+annotation.word+'</div>'+
 			'<div class="slide_type">'+annotation.wordtype+'</div>'+
 			'<div class="slide_url">Seen at: '+convertlink(str)+'</div></p>'+
@@ -113,6 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			'<div class="slide_defin">'+annotation.definition+'</div></p>'+
 			'<div class="slide_subhead">Usage example</div>'+
 			'<div class="slide_defin">'+annotation.usageexample+'</div></p>'+
+			'<div class="slide_subhead">Usage source</div>'+
+			'<div class="slide_defin">'+annotation.usageSource+'</div></p>'+
 			'<div class="slide_subhead">Lucy’s commentary</div>'+
 			'<div class="slide_defin">'+annotation.lucycommentary+'</div></p>'+
 			'<div class="slide_type">Related words</div>'
@@ -139,6 +147,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 	}
 	
+	function dateFormat(d) {
+		//console.log(d)
+		var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+		var datestring = months[d.getMonth()]+" "+d.getDate()+" "+d.getFullYear()
+		//console.log(datestring)
+		return datestring;
+	}
 		
 
 	function select(selector, parent=document) {
@@ -149,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	function fullDef() {
 		var word = this.getAttribute('data-word');
 		var definitions = index_by_word[word];
-		console.log(word)
+		console.log("word",word)
 		console.dir(definitions)
 		//console.log("Results ",results);
 		buildDef (definitions)
