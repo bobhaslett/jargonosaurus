@@ -1,8 +1,11 @@
 import oHoverable from 'o-hoverable';
 import FastClick from 'fastclick';
 
+
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
 function is_valid_date(date) {
-	return date && date instanceof Date && !isNaN(date.getTime());
+	return date && date instanceof Date && !isNaN(date.getTime()) && date.getTime() > 1;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,11 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// YOUR CODE HERE!
 	var dataset = spreadsheet.data.map(function(row) {
-		row.submisiondate = new Date(row.submisiondate);
-		console.log("row.submisiondate now" ,row.submisiondate)
+		//US to UK date conversion
+		var dString=String(row.submissiondate);
+		var d = new Date(dString.split('/')[2], dString.split('/')[1] - 1, dString.split('/')[0]);
+		row.submissiondate =d;
+
 		if (!is_valid_date(row.submissiondate)) {
-			console.log(row.submisiondate);
-			row.submisiondate = new Date(null); // Epoch.
+			console.log(row.submissiondate);
+			row.submissiondate = null;
 		}
 		return row;
 	});
@@ -32,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		return ind;
 	}, {});
 
-	console.dir(index_by_word)
+	//console.dir(index_by_word)
 
 	// console.log("dataset",dataset);
 	var width= document.getElementById('holder').getBoundingClientRect().width;
@@ -53,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		var search_term = (this.value).toLowerCase();
 
 		var results = Object.keys(index_by_word).filter(function(word){
-			return word.indexOf(search_term) === 0;
+			return word.indexOf(search_term) > -1;
 		}).reduce(function(arr, word) {
 			return arr.concat(index_by_word[word]);
 		}, []);
@@ -82,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			var wordContent=''
 			var annotation=dataset[i]
 			var str =String(annotation.commenturl)
-			var subDate=dateFormat(annotation.submisiondate)
+			var subDate=dateFormat(annotation.submissiondate)
 			if (annotation.word!== null) {
 				wordContent=wordContent+'<div class="slide_date">'+subDate+'</div>'+
 				'<div class="slide_word" data-word="'+ annotation.word.toLowerCase() +'" id="'+annotation.wordid+'">'+annotation.word+'</div>'+
@@ -110,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			var wordContent=''
 			var annotation=data[i]
 			var str =String(annotation.commenturl);
-			var subDate=dateFormat(annotation.submisiondate)
+			var subDate=dateFormat(annotation.submissiondate)
 			wordContent=wordContent+'<div class="slide_date">'+subDate+'</div>'+
 			'<div class="slide_word" data-word="'+ annotation.word.toLowerCase() +'" id="'+annotation.wordid+'">'+annotation.word+'</div>'+
 			'<div class="slide_type">'+annotation.wordtype+'</div>'+
@@ -125,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			'<div class="slide_defin">'+annotation.lucycommentary+'</div></p>'+
 			'<div class="slide_type">Related words</div>'
 			
-			console.log("annotations is",annotation.relatedwords);
+			//console.log("annotations is",annotation.relatedwords);
 			if (annotation.relatedwords!== null) {
 				var split=annotation.relatedwords;
 				var related='';
@@ -147,9 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 	}
 	
+		
 	function dateFormat(d) {
-		//console.log(d)
-		var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+		//Format US date to UK
+
+		if (!d) {
+			return '';
+		}
 		var datestring = months[d.getMonth()]+" "+d.getDate()+" "+d.getFullYear()
 		//console.log(datestring)
 		return datestring;
@@ -164,8 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	function fullDef() {
 		var word = this.getAttribute('data-word');
 		var definitions = index_by_word[word];
-		console.log("word",word)
-		console.dir(definitions)
+		// console.log("word",word)
+		// console.dir(definitions)
 		//console.log("Results ",results);
 		buildDef (definitions)
 	}
@@ -194,8 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
  	function sortDS(data) {
  		data.sort(function(a, b) {
-    		a = (a.submisiondate);
-    		b = (b.submisiondate);
+    		a = (a.submissiondate);
+    		b = (b.submissiondate);
     	return a>b ? -1 : a<b ? 1 : 0;
 		});
 		return data
